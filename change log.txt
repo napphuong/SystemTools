@@ -1,1 +1,10 @@
-20160527: Initial Release
+20160720:	Restructure the code
+		Resync system time on startup
+		Add buttons to run favourite apps separately
+		Add AUC on startup
+		Add setup.py to run py2exe
+		Textbox now save data to settings.ini when lost focus
+		Remove console window when run system command
+		App is minimized to tray now
+
+20160527: 	Initial Release

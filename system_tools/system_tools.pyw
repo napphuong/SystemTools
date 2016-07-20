@@ -5,5 +5,6 @@ import platform
 
 if platform.system() == "Windows":
     import qt_windows
+
 elif  platform.system()=="Linux":
-    import qt_linux.py
+    import qt_linux
