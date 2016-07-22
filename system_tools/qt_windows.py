@@ -13,8 +13,6 @@ CONFIG_FILE = 'config.ini'
 config = configparser.ConfigParser()
 
 class MyLineEdit(QtGui.QLineEdit):
-    section = ''
-    key = ''
     def __init__(self,section,key,parent=None):
         globals () ['section'] = section
         globals () ['key'] = key
@@ -22,7 +20,6 @@ class MyLineEdit(QtGui.QLineEdit):
         config.read(CONFIG_FILE)
         if config.has_option(section,key):
             self.setText(config.get(section,key))
-        
             
     def focusInEvent(self, e):
         self.selectAll()
@@ -260,23 +257,16 @@ class MainWindow(QtGui.QMainWindow):
         elif self.comboChangePowerPlan.currentText() == "High Performance":
             subprocess.Popen(["powercfg", "-s", "SCHEME_MIN"],creationflags=DETACHED_PROCESS)
 
+# Let the hunt begin
+import admin, windowExists
+if not windowExists.WindowExists('System Tools by Napphuong'):
+    if not admin.isUserAdmin():
+        admin.runAsAdmin()
+    else:
+        subprocess.Popen(['net', 'start', 'w32time'],creationflags=DETACHED_PROCESS)
+        subprocess.Popen(['w32tm', '/resync'], creationflags=DETACHED_PROCESS)
+        app = QtGui.QApplication(sys.argv) 
+        frame = MainWindow()
+        frame.show() 
+        sys.exit(app.exec_())
 
-# Start the code
-app = QtGui.QApplication(sys.argv) 
-frame = MainWindow()
-frame.show() 
-sys.exit(app.exec_())
-'''
-
-import admin
-if not admin.isUserAdmin():
-    admin.runAsAdmin()
-else:
-    subprocess.Popen(['net', 'start', 'w32time'],creationflags=DETACHED_PROCESS)
-    subprocess.Popen(['w32tm', '/resync'], creationflags=DETACHED_PROCESS)
-    app = QtGui.QApplication(sys.argv) 
-    frame = MainWindow()
-    frame.show() 
-    sys.exit(app.exec_())
-
-'''

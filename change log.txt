@@ -1,3 +1,9 @@
+20160722:	icon folder and config.ini now are auto copied by setup.py file
+		pywin32 can be complied by changing setup.py file (bundle = 1 to 3)
+		improve setup.py code
+		Only run if app is not running
+		Add icon to main app
+		Add setup.bat to create py2exe with only one click
 20160720:	Restructure the code
 		Resync system time on startup
 		Add buttons to run favourite apps separately
