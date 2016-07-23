@@ -153,6 +153,22 @@ class MainWindow(QtGui.QMainWindow):
         self.btnCancelShutdown.resize(self.button_width,self.button_height)
         self.btnCancelShutdown.move(self.left_margin, self.top_margin1 + 3 * \
                                     (self.top_margin2 + self.button_height))
+
+        # screen off
+        import turnoff
+        self.btnScreenOff = QtGui.QPushButton('&OFF SCREEN', self)
+        self.btnScreenOff.setToolTip('Click to turn off screen!')
+        self.btnScreenOff.clicked.connect(turnoff.turnoff)
+        self.btnScreenOff.resize(self.button_width,self.button_height)
+        self.btnScreenOff.move(self.left_margin, self.top_margin1 + 4 * \
+                                    (self.top_margin2 + self.button_height))
+
+        # Create progressBar. 
+        self.progressbar = QtGui.QProgressBar(self)
+        self.progressbar.resize(self.button_width * 2 + 50, self.button_height /3)   
+        self.progressbar.setValue(0)
+        self.progressbar.move(self.left_margin, self.top_margin1 + 5 * \
+                      (self.top_margin2 + self.button_height))
         
         # Add run my apps button
         self.btnRunApp = QtGui.QPushButton('&Start all apps', self)
@@ -179,21 +195,23 @@ class MainWindow(QtGui.QMainWindow):
                                  self.top_margin1 + 2 * (self.top_margin2 + self.button_height))
         self.comboChangePowerPlan.activated.connect(self.changePowerPlan)
 
+        # sync time
+        import synctime
+        self.btnSyncTime = QtGui.QPushButton('SYNC TIME', self)
+        self.btnSyncTime.setToolTip('Click to sync time!')
+        self.btnSyncTime.clicked.connect(synctime.synctime)
+        self.btnSyncTime.resize(self.button_width,self.button_height)
+        self.btnSyncTime.move(self.left_margin *2 + self.button_width,  self.top_margin1 + 3 * \
+                          (self.top_margin2 + self.button_height))
+
         # Add a button: Quit
         self.btnQuit = QtGui.QPushButton('&Quit', self)
         self.btnQuit.setToolTip('Click to quit!')
         self.btnQuit.clicked.connect(QtGui.qApp.quit)
         self.btnQuit.resize(self.button_width,self.button_height)
-        self.btnQuit.move(self.left_margin *2 + self.button_width,  self.top_margin1 + 3 * \
+        self.btnQuit.move(self.left_margin *2 + self.button_width,  self.top_margin1 + 4 * \
                           (self.top_margin2 + self.button_height))        
 
-        # Create progressBar. 
-        self.progressbar = QtGui.QProgressBar(self)
-        self.progressbar.resize(self.button_width * 2 + 50, self.button_height /3)   
-        self.progressbar.setValue(0)
-        self.progressbar.move(self.left_margin, self.top_margin1 + 4 * \
-                      (self.top_margin2 + self.button_height))
-        
         # Create apps buttons
         config.read(CONFIG_FILE)
         position = 0
@@ -220,7 +238,7 @@ class MainWindow(QtGui.QMainWindow):
             time.sleep(5*onePercent)
             value = self.progressbar.value() + 5
             self.progressbar.setValue(value)
-     
+
     def runAppsInConfigFile(self, app_section):
         config.read(CONFIG_FILE)
         # Show a message box
@@ -258,15 +276,9 @@ class MainWindow(QtGui.QMainWindow):
             subprocess.Popen(["powercfg", "-s", "SCHEME_MIN"],creationflags=DETACHED_PROCESS)
 
 # Let the hunt begin
-import admin, windowExists
+import windowExists
 if not windowExists.WindowExists('System Tools by Napphuong'):
-    if not admin.isUserAdmin():
-        admin.runAsAdmin()
-    else:
-        subprocess.Popen(['net', 'start', 'w32time'],creationflags=DETACHED_PROCESS)
-        subprocess.Popen(['w32tm', '/resync'], creationflags=DETACHED_PROCESS)
-        app = QtGui.QApplication(sys.argv) 
-        frame = MainWindow()
-        frame.show() 
-        sys.exit(app.exec_())
-
+    app = QtGui.QApplication(sys.argv) 
+    frame = MainWindow()
+    frame.show() 
+    sys.exit(app.exec_())
