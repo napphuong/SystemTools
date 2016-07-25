@@ -6,6 +6,7 @@ This module create window and buttons in Windows.
 """
 
 import sys, subprocess, time, configparser
+from scripts import windowexists, turnoff, admin
 from PyQt4 import QtGui
 
 DETACHED_PROCESS = 0x00000008
@@ -155,7 +156,6 @@ class MainWindow(QtGui.QMainWindow):
                                     (self.top_margin2 + self.button_height))
 
         # screen off
-        import turnoff
         self.btnScreenOff = QtGui.QPushButton('&OFF SCREEN', self)
         self.btnScreenOff.setToolTip('Click to turn off screen!')
         self.btnScreenOff.clicked.connect(turnoff.turnoff)
@@ -196,10 +196,9 @@ class MainWindow(QtGui.QMainWindow):
         self.comboChangePowerPlan.activated.connect(self.changePowerPlan)
 
         # sync time
-        import synctime
         self.btnSyncTime = QtGui.QPushButton('SYNC TIME', self)
         self.btnSyncTime.setToolTip('Click to sync time!')
-        self.btnSyncTime.clicked.connect(synctime.synctime)
+        self.btnSyncTime.clicked.connect(admin.synctime)
         self.btnSyncTime.resize(self.button_width,self.button_height)
         self.btnSyncTime.move(self.left_margin *2 + self.button_width,  self.top_margin1 + 3 * \
                           (self.top_margin2 + self.button_height))
@@ -262,7 +261,8 @@ class MainWindow(QtGui.QMainWindow):
         filename = QtGui.QFileDialog.getOpenFileName(self, 'Choose File', 'C:\\')
         if filename:
             config.read(CONFIG_FILE)
-            if not config.has_section(app_section): config.add_section(app_section)
+            if not config.has_section(app_section):
+                config.add_section(app_section)
             count = 1
             while (config.has_option(app_section, 'key' + str(count))):
                 count +=1
@@ -276,9 +276,12 @@ class MainWindow(QtGui.QMainWindow):
             subprocess.Popen(["powercfg", "-s", "SCHEME_MIN"],creationflags=DETACHED_PROCESS)
 
 # Let the hunt begin
-import windowExists
-if not windowExists.WindowExists('System Tools by Napphuong'):
+import platform
+if platform.system() == "Windows" and \
+        not windowexists.windowexists('System Tools by Napphuong'):
     app = QtGui.QApplication(sys.argv) 
     frame = MainWindow()
     frame.show() 
     sys.exit(app.exec_())
+
+admin.synctime()

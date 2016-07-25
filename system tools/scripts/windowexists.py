@@ -1,6 +1,6 @@
 import win32api, win32ui
 
-def WindowExists(windowName):
+def windowexists(windowName):
     try:
         win32ui.FindWindow(None, windowName)
     except win32ui.error:

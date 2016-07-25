@@ -5,11 +5,11 @@
 # (C) COPYRIGHT © Preston Landers 2010
 # Released under the same license as Python 2.6.5
 
+# Add tasks need admin right by Napphuong
 
 import sys, os, traceback, types
 
 def isUserAdmin():
-
     if os.name == 'nt':
         import ctypes
         # WARNING: requires Windows XP SP2 or higher!
@@ -61,7 +61,6 @@ def runAsAdmin(cmdLine=None, wait=True):
                               lpVerb=lpVerb,
                               lpFile=cmd,
                               lpParameters=params)
-
     if wait:
         procHandle = procInfo['hProcess']    
         obj = win32event.WaitForSingleObject(procHandle, win32event.INFINITE)
@@ -69,21 +68,17 @@ def runAsAdmin(cmdLine=None, wait=True):
         #print "Process handle %s returned code %s" % (procHandle, rc)
     else:
         rc = None
-
     return rc
 
-def test():
-    rc = 0
+def synctime():
+    import subprocess
+    DETACHED_PROCESS = 0x00000008
+
     if not isUserAdmin():
-        print ("You're not an admin.", os.getpid(), "params: ", sys.argv)
-        #rc = runAsAdmin(["c:\\Windows\\notepad.exe"])
-        rc = runAsAdmin()
+        runAsAdmin()
     else:
-        print ("You are an admin!", os.getpid(), "params: ", sys.argv)
-        rc = 0
-    #x = raw_input('Press Enter to exit.')
-    return rc
+        subprocess.Popen(['net', 'start', 'w32time'], creationflags=DETACHED_PROCESS)
+        subprocess.Popen(['w32tm', '/resync'], creationflags=DETACHED_PROCESS)
 
-
-if __name__ == "__main__":
-    sys.exit(test())
+if __name__ == '__main__':
+        sys.exit(synctime())
