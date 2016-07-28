@@ -1,4 +1,4 @@
-import win32api, win32ui
+import pywintypes, win32ui
 
 def windowexists(windowName):
     try:
@@ -9,7 +9,7 @@ def windowexists(windowName):
         return True
 
 if __name__ == '__main__':
-    if WindowExists ('System Tools by Napphuong'):
+    if windowexists ('System Tools by Napphuong'):
         print ("yes")
     else:
         print ("no")

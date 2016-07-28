@@ -70,15 +70,9 @@ def runAsAdmin(cmdLine=None, wait=True):
         rc = None
     return rc
 
-def synctime():
-    import subprocess
-    DETACHED_PROCESS = 0x00000008
-
-    if not isUserAdmin():
-        runAsAdmin()
-    else:
-        subprocess.Popen(['net', 'start', 'w32time'], creationflags=DETACHED_PROCESS)
-        subprocess.Popen(['w32tm', '/resync'], creationflags=DETACHED_PROCESS)
-
+def _test():
+    if isUserAdmin (): print ("admin")
+    else:runAsAdmin(); print("admin now")
+        
 if __name__ == '__main__':
-        sys.exit(synctime())
+        sys.exit(_test())
