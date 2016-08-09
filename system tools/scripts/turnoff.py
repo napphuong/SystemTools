@@ -1,6 +1,7 @@
 #!/usr/bin/env python
 import sys, time
 def turnoff():
+        time.sleep(1.5)
         if sys.platform.startswith('linux'):
                 import os
                 os.system("xset dpms force off")

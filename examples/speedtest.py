@@ -1,12 +1,14 @@
 import timeit, statistics
 setup1 = '''
-import subprocess
-DETACHED_PROCESS = 0x00000008
-subprocess.Popen(["shutdown", "-r", "-t", "5000"],creationflags=DETACHED_PROCESS)
+for x in range (5):
+    a = 0
+    a += x
 '''
 
 setup2 = '''
-print ('abc')
+for x in range (5):
+    a = 0
+    a = a + x
 '''
 
 

@@ -19,6 +19,11 @@
 
 # Change Logs:
 
+2016.08.09
+	Add tabs and reconstruct layout using qtvboxlayout
+	Add menu bar to backup and restore registry data (in case re-install windows)
+	Fix add apps to config file due to change of QtWidgets.QFileDialog.getOpenFileName in pyqt5	
+	
 2016.07.28
 	start using pip function (with admin right)
 	exit now is exit (not go to tray any more)
