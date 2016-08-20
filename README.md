@@ -13,12 +13,16 @@
 2016.07.21: Should add global shortcuts
 2016.07.21: Should refresh app buttons after adding apps
 2016.07.21: [SOLVED] Should add button to turn off the screen
-2016.07.21: Should detect power plan and change combobox value
+2016.07.21: [SOLVED] Should detect power plan and change combobox value
 2016.07.20: [SOLVED] Should check if this app is running when start
 2016.01.06: [SOLVED] Don't know how to ask AUC permission
 
 # Change Logs:
 
+2016.08.20
+	Reg backup and restore now store in a batch file.		
+	Reg backup and restore now are moved to tab 'other'.
+	Detect power plan and change combobox value when start up.
 2016.08.09
 	Add tabs and reconstruct layout using qtvboxlayout
 	Add menu bar to backup and restore registry data (in case re-install windows)

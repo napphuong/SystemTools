@@ -1,0 +1,3 @@
+reg import ./regs/globalpowerpolicy.reg
+reg import ./regs/usershellfolder.reg
+rem *** set /p DUMMY=Hit ENTER to continue...

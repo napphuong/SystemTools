@@ -7,7 +7,7 @@ This module create window and buttons in Windows.
 
 from PyQt5 import QtGui, QtCore, QtWidgets
 import sys, subprocess, time, configparser
-from scripts import windowexists, turnoff, synctime, textbox, regs
+from scripts import windowexists, turnoff, synctime, textbox, readpowerplan
 
 
 DETACHED_PROCESS = 0x00000008
@@ -20,7 +20,7 @@ class MainWindow(QtWidgets.QWidget):
 
         self.setGeometry(0,0, 350,450) 
         self.setWindowTitle("System Tools by Napphuong") 
-        self.setWindowIcon(QtGui.QIcon("./icon/system_tools.png")) 
+        self.setWindowIcon(QtGui.QIcon("./icons/system_tools.png")) 
         self.resize(300,300) 
         self.setMinimumSize(300,300) 
         self.center()
@@ -91,31 +91,23 @@ class MainWindow(QtWidgets.QWidget):
         self.restoreAction = QtWidgets.QAction("&Restore", self,
                 triggered=self.showNormal)
         
-        self.exitAction = QtWidgets.QAction(QtGui.QIcon('./icon/logout.png'), '&Exit', self)
+        self.exitAction = QtWidgets.QAction(QtGui.QIcon('./icons/logout.png'), '&Exit', self)
         self.exitAction.setShortcut('Ctrl+E')
         self.exitAction.triggered.connect(self.close)
 
-        self.backupRegAction = QtWidgets.QAction("&Backup Registry", self,
-                triggered = regs.backupreg)
-        self.restoreRegAction = QtWidgets.QAction("&Restore Registry", self,
-                triggered = regs.restorereg)
-        
     def createMenuBar (self):        
         # --- Menu --- #       
         # Create main menu
         self.mainMenu = QtWidgets.QMenuBar(self)
         self.fileMenu = self.mainMenu.addMenu('&File')
-        self.reinstallWindowsMenu = self.mainMenu.addMenu('&Reinstall Windows')
+        self.aboutMenu = self.mainMenu.addMenu('&About')
         
         # Add sub menu
         self.fileMenu.addAction(self.minimizeAction)
         self.fileMenu.addAction(self.maximizeAction)
         self.fileMenu.addAction(self.restoreAction)
         self.fileMenu.addSeparator()
-        self.fileMenu.addAction(self.exitAction)
-
-        self.reinstallWindowsMenu.addAction (self.backupRegAction)
-        self.reinstallWindowsMenu.addAction (self.restoreRegAction)      
+        self.fileMenu.addAction(self.exitAction)     
 
     def createTrayIcon(self):
         self.trayIconMenu = QtWidgets.QMenu(self)
@@ -126,7 +118,7 @@ class MainWindow(QtWidgets.QWidget):
         self.trayIconMenu.addAction(self.exitAction)
 
         self.trayIcon = QtWidgets.QSystemTrayIcon(self)
-        self.trayIcon.setIcon(QtGui.QIcon('./icon/system_tools.png'))
+        self.trayIcon.setIcon(QtGui.QIcon('./icons/system_tools.png'))
         self.trayIcon.setToolTip ('System Tools by Napphuong')
         self.trayIcon.setVisible(True)      
         self.trayIcon.setContextMenu(self.trayIconMenu)
@@ -170,6 +162,8 @@ class MainWindow(QtWidgets.QWidget):
         p3_vertical.addStretch(1)
 
         p4_vertical.addWidget(self.btnSyncTime)
+        p4_vertical.addWidget(self.btnBackupReg)
+        p4_vertical.addWidget(self.btnRestoreReg)
         p4_vertical.addStretch(1)
         
     def createButtons (self):        
@@ -214,8 +208,10 @@ class MainWindow(QtWidgets.QWidget):
         # Create combobox
         self.comboChangePowerPlan = QtWidgets.QComboBox(self)
         self.comboChangePowerPlan.setToolTip('Click to change power option mode!')
-        self.comboChangePowerPlan.addItem("Power Saving")
+        self.comboChangePowerPlan.addItem("Power Saver")
         self.comboChangePowerPlan.addItem("High Performance")
+        self.comboChangePowerPlan.addItem("Balanced (recommended)")
+        self.comboChangePowerPlan.setCurrentIndex(readpowerplan.readpowerplan())
         self.comboChangePowerPlan.activated.connect(self.changePowerPlan)
 
         # sync time
@@ -223,6 +219,16 @@ class MainWindow(QtWidgets.QWidget):
         self.btnSyncTime.setToolTip('Click to sync time!')
         self.btnSyncTime.clicked.connect(synctime.synctime)
 
+        # backup reg
+        self.btnBackupReg = QtWidgets.QPushButton('BACKUP REG', self)
+        self.btnBackupReg.setToolTip('Click to back up registry before re-install windows!')
+        self.btnBackupReg.clicked.connect(lambda: subprocess.check_call(r'.\batchs\exportreg.bat',shell=True))
+ 
+        # restore reg
+        self.btnRestoreReg = QtWidgets.QPushButton('RESTORE REG', self)
+        self.btnRestoreReg.setToolTip('Click to restore registry after re-install windows')
+        self.btnRestoreReg.clicked.connect(lambda: subprocess.check_call(r'.\batchs\importreg.bat',sheel=True))
+        
     def runAppsInConfigFile(self, config_file, app_section):
         config.read(config_file)
         # Show a message box
@@ -239,7 +245,7 @@ class MainWindow(QtWidgets.QWidget):
             self.btnApp = QtWidgets.QPushButton('&' + appPath[appPath.rfind("/")+1:appPath.rfind(".")], self)
             self.btnApp.clicked.connect(lambda: subprocess.Popen(appPath))
             tab.addWidget(self.btnApp)
-        
+
     def addApps2ConfigFile(self,app_section):
         filename, _ = QtWidgets.QFileDialog.getOpenFileName(self, 'Choose File', 'C:\\')
         if filename:
@@ -253,9 +259,9 @@ class MainWindow(QtWidgets.QWidget):
             with open(CONFIG_FILE, 'w') as f: config.write(f)
 
     def changePowerPlan(self):
-        if self.comboChangePowerPlan.currentText() == "Power Saving":
+        if self.comboChangePowerPlan.currentIndex () == 0:
             subprocess.Popen(["powercfg", "-s", "SCHEME_MAX"],creationflags=DETACHED_PROCESS)
-        elif self.comboChangePowerPlan.currentText() == "High Performance":
+        elif self.comboChangePowerPlan.currentIndex () == 1:
             subprocess.Popen(["powercfg", "-s", "SCHEME_MIN"],creationflags=DETACHED_PROCESS)
 
 #------------------------------------------------------------------------------#

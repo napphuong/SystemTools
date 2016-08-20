@@ -1,0 +1,3 @@
+reg export "HKCU\Control Panel\PowerCfg\GlobalPowerPolicy" "./regs/globalpowerpolicy.reg" /y
+reg export "HKCU\SOFTWARE\Microsoft\Windows\CurrentVersion\Explorer\User Shell Folders" "./regs/usershellfolder.reg" /y
+rem *** set /p DUMMY=Hit ENTER to continue...
