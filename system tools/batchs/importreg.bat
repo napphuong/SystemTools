@@ -1,3 +1,3 @@
-SET folder=%~dp0
-for /R "%folder%"\regs\ %%i in (*.reg) do (reg import "%%i")
-set /p DUMMY=Hit ENTER to continue...
+reg import ./regs/globalpowerpolicy.reg
+reg import ./regs/usershellfolder.reg
+rem *** set /p DUMMY=Hit ENTER to continue...

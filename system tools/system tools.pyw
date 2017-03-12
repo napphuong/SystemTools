@@ -222,24 +222,12 @@ class MainWindow(QtWidgets.QWidget):
         # backup reg
         self.btnBackupReg = QtWidgets.QPushButton('BACKUP REG', self)
         self.btnBackupReg.setToolTip('Click to back up registry before re-install windows!')
-        self.btnBackupReg.clicked.connect(self.backupReg)
+        self.btnBackupReg.clicked.connect(lambda: subprocess.check_call(r'.\batchs\exportreg.bat',shell=True))
  
         # restore reg
         self.btnRestoreReg = QtWidgets.QPushButton('RESTORE REG', self)
         self.btnRestoreReg.setToolTip('Click to restore registry after re-install windows')
-        self.btnRestoreReg.clicked.connect(self.restoreReg)
-
-    def backupReg(self):
-        subprocess.check_call(r'.\batchs\exportreg.bat',shell=True)
-        QtWidgets.QMessageBox.information \
-                 (self, 'Message', "Backup Done!", \
-                  QtWidgets.QMessageBox.Ok)
-                              
-    def restoreReg(self):
-        subprocess.Popen(['runas', r'/user:administrator' r'.\batchs\importreg.bat'],creationflags=DETACHED_PROCESS)
-        QtWidgets.QMessageBox.information \
-                 (self, 'Message', "Restore Done!", \
-                  QtWidgets.QMessageBox.Ok)
+        self.btnRestoreReg.clicked.connect(lambda: subprocess.check_call(r'.\batchs\importreg.bat',sheel=True))
         
     def runAppsInConfigFile(self, config_file, app_section):
         config.read(config_file)
